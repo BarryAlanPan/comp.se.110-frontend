@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as echarts from 'echarts';
 import { ChevronDownIcon } from 'lucide-react';
+import axios from 'axios';
 
 const filters = [
   "Dairy products", "Meat products", "Sweets and candy", "Bread and cereals",
@@ -10,58 +11,117 @@ const filters = [
 
 const Homepage = () => {
   const [selectedIngredients, setSelectedIngredients] = useState(Array(3).fill(''));
+  const [chartData, setChartData] = useState(null);
   const chartRef = useRef(null);
 
   useEffect(() => {
-    const chart = echarts.init(chartRef.current);
-    const option = {
-      title: {
-        text: 'Food Price Dashboard',
-        left: 'center'
-      },
-      tooltip: {
-        trigger: 'axis'
-      },
-      legend: {
-        data: ['Food Price Index', 'Meat Price Index', 'Dairy Price Index', 'Cereals Price Index', 'Oils Price Index', 'Sugar Price Index'],
-        top: 30
-      },
-      xAxis: {
-        type: 'category',
-        data: ['1970', '1980', '1990', '2000', '2010', '2020', '2024']
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        { name: 'Food Price Index', type: 'line', data: [100, 110, 105, 115, 150, 200, 230] },
-        { name: 'Meat Price Index', type: 'line', data: [95, 105, 100, 110, 140, 180, 190] },
-        { name: 'Dairy Price Index', type: 'line', data: [98, 108, 103, 113, 160, 220, 225] },
-        { name: 'Cereals Price Index', type: 'line', data: [97, 107, 102, 112, 155, 210, 240] },
-        { name: 'Oils Price Index', type: 'line', data: [96, 106, 101, 111, 145, 190, 210] },
-        { name: 'Sugar Price Index', type: 'line', data: [99, 109, 104, 114, 170, 250, 280] }
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8080/api/price');
+        setChartData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    const testData = {
+      categories: [
+        '2022M01', '2022M02', '2022M03', '2022M04', '2022M05', '2022M06',
+        '2022M07', '2022M08', '2022M09', '2022M10', '2022M11', '2022M12',
+        '2023M01', '2023M02', '2023M03', '2023M04', '2023M05', '2023M06'
       ],
-      dataZoom: [
+      series: [
         {
-          type: 'slider',
-          xAxisIndex: 0,
-          start: 0,
-          end: 100
+          name: 'Bread and cereals',
+          data: [103.61, 105.09, 105.9, 107.39, 109.66, 111.18, 114.25, 115.21, 119.92, 120.64, 120.4, 120.61, 121.65, 124.01, 125.33, 126.44, 127.11, 126.74]
         },
         {
-          type: 'inside',
-          xAxisIndex: 0,
-          start: 0,
-          end: 100
+          name: 'Meat products',
+          data: [100.2, 101.5, 102.8, 104.1, 105.4, 106.7, 108.0, 109.3, 110.6, 111.9, 113.2, 114.5, 115.8, 117.1, 118.4, 119.7, 121.0, 122.3]
+        },
+        {
+          name: 'Fish and seafood',
+          data: [98.5, 99.2, 99.9, 100.6, 101.3, 102.0, 102.7, 103.4, 104.1, 104.8, 105.5, 106.2, 106.9, 107.6, 108.3, 109.0, 109.7, 110.4]
+        },
+        {
+          name: 'Milk, cheese and eggs',
+          data: [101.8, 102.6, 103.4, 104.2, 105.0, 105.8, 106.6, 107.4, 108.2, 109.0, 109.8, 110.6, 111.4, 112.2, 113.0, 113.8, 114.6, 115.4]
+        },
+        {
+          name: 'Oils and fats',
+          data: [105.3, 107.1, 108.9, 110.7, 112.5, 114.3, 116.1, 117.9, 119.7, 121.5, 123.3, 125.1, 126.9, 128.7, 130.5, 132.3, 134.1, 135.9]
+        },
+        {
+          name: 'Fruit and berries',
+          data: [97.8, 98.1, 98.4, 98.7, 99.0, 99.3, 99.6, 99.9, 100.2, 100.5, 100.8, 101.1, 101.4, 101.7, 102.0, 102.3, 102.6, 102.9]
+        },
+        {
+          name: 'Vegetables',
+          data: [99.5, 100.2, 100.9, 101.6, 102.3, 103.0, 103.7, 104.4, 105.1, 105.8, 106.5, 107.2, 107.9, 108.6, 109.3, 110.0, 110.7, 111.4]
+        },
+        {
+          name: 'Sweets and candy',
+          data: [102.1, 102.9, 103.7, 104.5, 105.3, 106.1, 106.9, 107.7, 108.5, 109.3, 110.1, 110.9, 111.7, 112.5, 113.3, 114.1, 114.9, 115.7]
         }
-      ]
-    };
-    chart.setOption(option);
+      ],
+    }
 
-    return () => {
-      chart.dispose();
-    };
-  }, []); // No dependencies needed now
+    // setChartData(testData);
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (chartData && typeof chartData !== 'undefined') {
+      console.log(chartData);
+      const chart = echarts.init(chartRef.current);
+      const option = {
+        title: {
+          text: 'Food Price Dashboard',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        // legend: {
+        //   data: chartData.series.map(item => item.name),
+        //   top: 30
+        // },
+        xAxis: {
+          type: 'category',
+          data: chartData.categories
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: chartData.series.map(series => ({
+          name: series.name,
+          type: 'line',
+          data: series.data.map(value => value === 0 ? '-' : value),
+          connectNulls: true
+        })),
+        dataZoom: [
+          {
+            type: 'slider',
+            xAxisIndex: 0,
+            start: 0,
+            end: 100
+          },
+          {
+            type: 'inside',
+            xAxisIndex: 0,
+            start: 0,
+            end: 100
+          }
+        ]
+      };
+      chart.setOption(option);
+
+      return () => {
+        chart.dispose();
+      };
+    }
+  }, [chartData]);
 
   const handleRangeChange = (e) => {
     const [min, max] = e.target.value.split(',').map(Number);
@@ -81,8 +141,9 @@ const Homepage = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-900">Recipe Finder</h1>
+          <a href="/profile" className="text-blue-600 hover:text-blue-800">User Profile</a>
         </div>
       </header>
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">

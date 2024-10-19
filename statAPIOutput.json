@@ -1,0 +1,221 @@
+{
+    "version": "2.0",
+    "class": "dataset",
+    "label": "Consumer Price Index (2015=100) by Month, Commodity and Information",
+    "source": "Statistics Finland, consumer price index",
+    "updated": "2024-10-14T05:00:00Z",
+    "note": [
+        "<A HREF='https://stat.fi/en/statistics/documentation/khi' TARGET=_blank>Documentation of statistics</A>",
+        ". missing\r\n. missing"
+    ],
+    "role": {
+        "time": [
+            "Kuukausi"
+        ],
+        "metric": [
+            "Tiedot"
+        ]
+    },
+    "id": [
+        "Kuukausi",
+        "Hyödyke",
+        "Tiedot"
+    ],
+    "size": [
+        33,
+        1,
+        1
+    ],
+    "dimension": {
+        "Kuukausi": {
+            "label": "Month",
+            "category": {
+                "index": {
+                    "2022M01": 0,
+                    "2022M02": 1,
+                    "2022M03": 2,
+                    "2022M04": 3,
+                    "2022M05": 4,
+                    "2022M06": 5,
+                    "2022M07": 6,
+                    "2022M08": 7,
+                    "2022M09": 8,
+                    "2022M10": 9,
+                    "2022M11": 10,
+                    "2022M12": 11,
+                    "2023M01": 12,
+                    "2023M02": 13,
+                    "2023M03": 14,
+                    "2023M04": 15,
+                    "2023M05": 16,
+                    "2023M06": 17,
+                    "2023M07": 18,
+                    "2023M08": 19,
+                    "2023M09": 20,
+                    "2023M10": 21,
+                    "2023M11": 22,
+                    "2023M12": 23,
+                    "2024M01": 24,
+                    "2024M02": 25,
+                    "2024M03": 26,
+                    "2024M04": 27,
+                    "2024M05": 28,
+                    "2024M06": 29,
+                    "2024M07": 30,
+                    "2024M08": 31,
+                    "2024M09": 32
+                },
+                "label": {
+                    "2022M01": "2022M01",
+                    "2022M02": "2022M02",
+                    "2022M03": "2022M03",
+                    "2022M04": "2022M04",
+                    "2022M05": "2022M05",
+                    "2022M06": "2022M06",
+                    "2022M07": "2022M07",
+                    "2022M08": "2022M08",
+                    "2022M09": "2022M09",
+                    "2022M10": "2022M10",
+                    "2022M11": "2022M11",
+                    "2022M12": "2022M12",
+                    "2023M01": "2023M01",
+                    "2023M02": "2023M02",
+                    "2023M03": "2023M03",
+                    "2023M04": "2023M04",
+                    "2023M05": "2023M05",
+                    "2023M06": "2023M06",
+                    "2023M07": "2023M07",
+                    "2023M08": "2023M08",
+                    "2023M09": "2023M09",
+                    "2023M10": "2023M10",
+                    "2023M11": "2023M11",
+                    "2023M12": "2023M12",
+                    "2024M01": "2024M01",
+                    "2024M02": "2024M02",
+                    "2024M03": "2024M03",
+                    "2024M04": "2024M04",
+                    "2024M05": "2024M05",
+                    "2024M06": "2024M06",
+                    "2024M07": "2024M07",
+                    "2024M08": "2024M08",
+                    "2024M09": "2024M09"
+                }
+            },
+            "extension": {
+                "elimination": false,
+                "show": "value"
+            },
+            "link": {
+                "describedby": [
+                    {
+                        "extension": {
+                            "Kuukausi": "SCALE-TYPE=None"
+                        }
+                    }
+                ]
+            }
+        },
+        "Hyödyke": {
+            "label": "Commodity",
+            "category": {
+                "index": {
+                    "0111": 0
+                },
+                "label": {
+                    "0111": "01.1.1 Bread and cereals"
+                }
+            },
+            "extension": {
+                "elimination": false,
+                "show": "value"
+            },
+            "link": {
+                "describedby": [
+                    {
+                        "extension": {
+                            "Hyödyke": "SCALE-TYPE=nominal"
+                        }
+                    }
+                ]
+            }
+        },
+        "Tiedot": {
+            "label": "Information",
+            "category": {
+                "index": {
+                    "indeksipisteluku": 0
+                },
+                "label": {
+                    "indeksipisteluku": "Point figure"
+                },
+                "note": {
+                    "indeksipisteluku": [
+                        "Point figure is a change quantity used in price indices, which expresses the price, average price or index of the reference period relative to the price, average price or index of the base period. The point figure of the base period is usually denoted by the number hundred. For example, if the point figure of the commodity is 105.3 in a certain period, it means that the price of the commodity has risen by 5.3 per cent from the base period."
+                    ]
+                },
+                "unit": {
+                    "indeksipisteluku": {
+                        "base": "Index point",
+                        "decimals": 2
+                    }
+                }
+            },
+            "extension": {
+                "elimination": false,
+                "show": "value"
+            }
+        }
+    },
+    "extension": {
+        "px": {
+            "tableid": "statfin_khi_pxt_11xb",
+            "decimals": 2,
+            "official-statistics": true,
+            "aggregallowed": true,
+            "language": "fi",
+            "description": "11xb -- Consumer Price Index (2015=100), monthly data, 2015M01-2024M09",
+            "matrix": "001_11xb_2024m09",
+            "subject-code": "KHI"
+        },
+        "contact": [
+            {
+                "raw": "<A HREF='https://stat.fi/en/statistics/khi' TARGET=_blank>Statistics' homepage</A>"
+            }
+        ]
+    },
+    "value": [
+        103.61,
+        105.09,
+        105.9,
+        107.39,
+        109.66,
+        111.18,
+        114.25,
+        115.21,
+        119.92,
+        120.64,
+        120.4,
+        120.61,
+        121.65,
+        124.01,
+        125.33,
+        126.44,
+        127.11,
+        126.74,
+        127.32,
+        126.59,
+        127.04,
+        127.58,
+        126.89,
+        126.75,
+        126.21,
+        126.02,
+        126.15,
+        125.26,
+        125.82,
+        125.81,
+        126.29,
+        126.09,
+        125.82
+    ]
+}
