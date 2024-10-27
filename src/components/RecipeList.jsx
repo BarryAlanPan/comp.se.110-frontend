@@ -59,7 +59,7 @@ const RecipeList = ({ ingredients }) => {
   }
 
   return (
-    <div className="mt-6 grid grid-cols-4 gap-4">
+    <div className="mt-6 grid grid-cols-3 gap-4">
       {recipes.map((recipe) => (
         <div key={recipe.id} className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="p-4">
