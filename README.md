@@ -12,3 +12,16 @@ Vite + React.js + Tailwind CSS
 ## Assignment Submission Details
 
 Our design documents can be found from the backend repository: [direct link](https://github.com/ikarrila/COMP.SE.110-backend/tree/main/Documents)  
+
+## Prerequisites
+
+- Node.js (Latest LTS version)
+- Access to the backend server (see backend repository link in README.md)
+
+## Running the project
+
+```bash
+   npm install
+
+   npm run dev
+```
