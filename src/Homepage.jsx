@@ -3,6 +3,7 @@ import * as echarts from 'echarts';
 import { ChevronDownIcon } from 'lucide-react';
 import axios from 'axios';
 import RecipeList from './components/RecipeList';
+import { useNavigate } from 'react-router-dom';
 
 const filters = [
   "Dairy products", "Meat products", "Sweets and candy", "Bread and cereals",
@@ -14,6 +15,7 @@ const Homepage = () => {
   const [selectedIngredients, setSelectedIngredients] = useState(Array(3).fill(''));
   const [chartData, setChartData] = useState(null);
   const chartRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -160,6 +162,12 @@ const Homepage = () => {
     return `${date.getMonth() + 1}/${date.getFullYear()}`;
   };
 
+  const handleGenerateClick = () => {
+    // Filter out empty strings and pass only selected ingredients
+    const filteredIngredients = selectedIngredients.filter(ingredient => ingredient);
+    navigate('/recipe-generator', { state: { includedIngredients: filteredIngredients } });
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <header className="bg-white shadow">
@@ -228,20 +236,12 @@ const Homepage = () => {
                 </div>
               ))}
             </div>
-            {/* <button 
+            <button 
               className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                // This will trigger the RecipeList component to fetch recipes
-                const validIngredients = selectedIngredients.filter(i => i !== '');
-                if (validIngredients.length === 0) {
-                  alert('Please select at least one ingredient');
-                  return;
-                }
-              }}
+              onClick={handleGenerateClick}
             >
               Click to generate recipes
-            </button> */}
-            
+            </button>
           </div>
           
         </div>
