@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [name, setName] = useState('');
@@ -8,6 +9,7 @@ const Profile = () => {
   const [birthdate, setBirthdate] = useState('');
   const [allergies, setAllergies] = useState([]);
   const [newAllergy, setNewAllergy] = useState('');
+  const navigate = useNavigate();
 
   const handleAddAllergy = () => {
     if (newAllergy.trim() !== '') {
@@ -31,15 +33,22 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div className="flex items-center">
-            <ChevronLeft className="h-6 w-6 mr-2 cursor-pointer" onClick={() => {/* Handle navigation */}} />
-            <h1 className="text-3xl font-bold text-gray-900">Personal Details</h1>
-          </div>
-          <h2 className="text-2xl font-semibold text-gray-700">Saved Recipes</h2>
+    <header className="bg-white shadow">
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+        <div className="flex items-center space-x-4">
+          {/* Return to dashboard button for my own sanity, feel free edit */}
+          <button
+            onClick={() => navigate('/')}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Return to dashboard
+          </button>
+          <ChevronLeft className="h-6 w-6 cursor-pointer" onClick={() => {/* Handle navigation */}} />
+          <h1 className="text-3xl font-bold text-gray-900">Personal Details</h1>
         </div>
-      </header>
+        <h2 className="text-2xl font-semibold text-gray-700">Saved Recipes</h2>
+      </div>
+    </header>
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white shadow rounded-lg p-6">
