@@ -11,7 +11,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/profile" element={<UserProfile />} />
-        <Route path="/recipe/:id" element={<RecipeDetails />} />
         <Route path="/recipe-generator" element={<RecipeGenerator />} />
       </Routes>
     </Router>
