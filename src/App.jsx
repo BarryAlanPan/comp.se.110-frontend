@@ -2,7 +2,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Homepage from './Homepage'
 import UserProfile from './UserProfile'
-import RecipeDetails from './components/RecipeDetails'
 import RecipeGenerator from './components/RecipeGenerator';
 
 function App() {
