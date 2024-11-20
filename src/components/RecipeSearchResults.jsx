@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Search } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Dialog, DialogPanel } from '@headlessui/react';
+import RecipeDetails from './RecipeDetails';
 
 const RecipeSearchResults = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRecipeId, setSelectedRecipeId] = useState(null);
+  const [showRecipe, setShowRecipe] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -113,52 +117,66 @@ const RecipeSearchResults = () => {
         ) : (
           <>
             {/* Recipe Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {recipes.map((recipe) => (
                 <div 
                   key={recipe.id} 
-                  className="relative group cursor-pointer"
-                  onClick={() => navigate(`/recipe/${recipe.id}`)}
+                  className="bg-white rounded-lg shadow-md overflow-hidden"
                 >
-                  <div className="rounded-lg overflow-hidden shadow-md transition-transform duration-200 hover:scale-105">
+                  <div className="p-4">
                     <img
                       src={recipe.image || '/placeholder-recipe.jpg'}
                       alt={recipe.name}
-                      className="w-full h-64 object-cover"
+                      className="w-full h-48 object-cover rounded-lg mb-4"
                     />
-                  </div>
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    {recipe.isDairyFree && (
-                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium shadow-sm">
-                        Dairy Free
-                      </span>
-                    )}
-                    {recipe.isGlutenFree && (
-                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium shadow-sm">
-                        Gluten Free
-                      </span>
-                    )}
-                    {recipe.isHealthy && (
-                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium shadow-sm">
-                        Healthy
-                      </span>
-                    )}
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-900">{recipe.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{recipe.name}</h3>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {recipe.isDairyFree && (
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                          Dairy Free
+                        </span>
+                      )}
+                      {recipe.isGlutenFree && (
+                        <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                          Gluten Free
+                        </span>
+                      )}
+                      {recipe.isHealthy && (
+                        <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                          Healthy
+                        </span>
+                      )}
+                      {recipe.isCheap && (
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">
+                          Budget Friendly
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedRecipeId(recipe.id);
+                        setShowRecipe(true);
+                      }}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
+                    >
+                      View Recipe Details
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
-
-            {recipes.length > 0 && (
-              <div className="text-center text-gray-500 mb-8">
-                Scroll down for more
-              </div>
-            )}
           </>
         )}
       </div>
+
+      {/* Recipe dialog / modal window */}
+      <Dialog open={showRecipe} onClose={() => setShowRecipe(false)} className="relative z-100">
+        <div className="fixed inset-0 flex w-screen items-center justify-center py-8 bg-slate-500 bg-opacity-40">
+          <DialogPanel className="min-w-2xl max-h-[90vh] overflow-y-auto border rounded-lg shadow-lg bg-white px-16 py-12">
+            <RecipeDetails id={selectedRecipeId} setShowRecipe={setShowRecipe} />
+          </DialogPanel>
+        </div>
+      </Dialog>
     </div>
   );
 };
