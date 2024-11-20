@@ -4,6 +4,7 @@ import { ChevronDownIcon } from 'lucide-react';
 import axios from 'axios';
 import RecipeList from './components/RecipeList';
 import { useNavigate } from 'react-router-dom';
+import Header from './components/Header';
 
 const filters = [
   "Dairy products", "Meat products", "Sweets and candy", "Bread and cereals",
@@ -14,6 +15,7 @@ const filters = [
 const Homepage = () => {
   const [selectedIngredients, setSelectedIngredients] = useState(Array(3).fill(''));
   const [chartData, setChartData] = useState(null);
+  const [yaxis, setYaxis] = useState({ min: 0, max: 200 });
   const chartRef = useRef(null);
   const navigate = useNavigate();
 
@@ -21,55 +23,27 @@ const Homepage = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8080/api/price');
-        setChartData(response.data);
+
+        // Modify naming of series to remove unnecessary prefix numbers
+        const modifiedData = {
+          ...response.data,
+          series: response.data.series.map(item => ({
+              ...item,
+              name: item.name.split(' ').slice(1).join(" ")
+          }))
+        };
+
+        // Get min and max values for Y axis
+        const allValues = modifiedData.series.flatMap(series => series.data);
+        const min = Math.min(...allValues) - 10;
+        const max = Math.max(...allValues) + 10;
+
+        setYaxis({ min: min, max: max});
+        setChartData(modifiedData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
-    // const testData = {
-    //   categories: [
-    //     '2022M01', '2022M02', '2022M03', '2022M04', '2022M05', '2022M06',
-    //     '2022M07', '2022M08', '2022M09', '2022M10', '2022M11', '2022M12',
-    //     '2023M01', '2023M02', '2023M03', '2023M04', '2023M05', '2023M06'
-    //   ],
-    //   series: [
-    //     {
-    //       name: 'Bread and cereals',
-    //       data: [103.61, 105.09, 105.9, 107.39, 109.66, 111.18, 114.25, 115.21, 119.92, 120.64, 120.4, 120.61, 121.65, 124.01, 125.33, 126.44, 127.11, 126.74]
-    //     },
-    //     {
-    //       name: 'Meat products',
-    //       data: [100.2, 101.5, 102.8, 104.1, 105.4, 106.7, 108.0, 109.3, 110.6, 111.9, 113.2, 114.5, 115.8, 117.1, 118.4, 119.7, 121.0, 122.3]
-    //     },
-    //     {
-    //       name: 'Fish and seafood',
-    //       data: [98.5, 99.2, 99.9, 100.6, 101.3, 102.0, 102.7, 103.4, 104.1, 104.8, 105.5, 106.2, 106.9, 107.6, 108.3, 109.0, 109.7, 110.4]
-    //     },
-    //     {
-    //       name: 'Milk, cheese and eggs',
-    //       data: [101.8, 102.6, 103.4, 104.2, 105.0, 105.8, 106.6, 107.4, 108.2, 109.0, 109.8, 110.6, 111.4, 112.2, 113.0, 113.8, 114.6, 115.4]
-    //     },
-    //     {
-    //       name: 'Oils and fats',
-    //       data: [105.3, 107.1, 108.9, 110.7, 112.5, 114.3, 116.1, 117.9, 119.7, 121.5, 123.3, 125.1, 126.9, 128.7, 130.5, 132.3, 134.1, 135.9]
-    //     },
-    //     {
-    //       name: 'Fruit and berries',
-    //       data: [97.8, 98.1, 98.4, 98.7, 99.0, 99.3, 99.6, 99.9, 100.2, 100.5, 100.8, 101.1, 101.4, 101.7, 102.0, 102.3, 102.6, 102.9]
-    //     },
-    //     {
-    //       name: 'Vegetables',
-    //       data: [99.5, 100.2, 100.9, 101.6, 102.3, 103.0, 103.7, 104.4, 105.1, 105.8, 106.5, 107.2, 107.9, 108.6, 109.3, 110.0, 110.7, 111.4]
-    //     },
-    //     {
-    //       name: 'Sweets and candy',
-    //       data: [102.1, 102.9, 103.7, 104.5, 105.3, 106.1, 106.9, 107.7, 108.5, 109.3, 110.1, 110.9, 111.7, 112.5, 113.3, 114.1, 114.9, 115.7]
-    //     }
-    //   ],
-    // }
-
-    // setChartData(testData);
 
     fetchData();
   }, []);
@@ -90,7 +64,9 @@ const Homepage = () => {
         legend: {
           data: chartData.series.map(item => item.name),
           top: 30,
-          type: 'scroll',  // Add scrolling for better legend handling
+          // left: 0,
+          // orient: "vertical",
+          // type: "scroll",  // Add scrolling for better legend handling
           padding: [5, 50], // Add padding
           height: 80  // Set specific height for legend area
         },
@@ -103,7 +79,9 @@ const Homepage = () => {
           data: chartData.categories
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          min: yaxis.min,
+          max: yaxis.max,
         },
         series: chartData.series.map(series => ({
           name: series.name,
@@ -170,12 +148,7 @@ const Homepage = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Recipe Finder</h1>
-          <a href="/profile" className="text-blue-600 hover:text-blue-800">User Profile</a>
-        </div>
-      </header>
+      <Header />
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* <div className="bg-white shadow rounded-lg p-6 text-black flex flex-col justify-center items-center h-full">
@@ -245,6 +218,7 @@ const Homepage = () => {
           </div>
           
         </div>
+
         <RecipeList ingredients={selectedIngredients} />
         
       </main>

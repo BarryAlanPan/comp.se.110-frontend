@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import RecipeDetails from './RecipeDetails';
 
 const RecipeList = ({ ingredients }) => {
   const [recipes, setRecipes] = useState([]);
+  const [selectedRecipeId, setSelectedRecipeId] = useState(null);
+  const [showRecipe, setShowRecipe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -59,43 +63,57 @@ const RecipeList = ({ ingredients }) => {
   }
 
   return (
-    <div className="mt-6 grid grid-cols-3 gap-4">
-      {recipes.map((recipe) => (
-        <div key={recipe.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{recipe.name}</h3>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {recipe.isDairyFree && (
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                  Dairy Free
-                </span>
-              )}
-              {recipe.isGlutenFree && (
-                <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">
-                  Gluten Free
-                </span>
-              )}
-              {recipe.isHealthy && (
-                <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">
-                  Healthy
-                </span>
-              )}
-              {recipe.isCheap && (
-                <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">
-                  Budget Friendly
-                </span>
-              )}
+    <>
+      <div className="mt-6 grid grid-cols-3 gap-4">
+        {recipes.map((recipe) => (
+          <div key={recipe.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="p-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{recipe.name}</h3>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {recipe.isDairyFree && (
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                    Dairy Free
+                  </span>
+                )}
+                {recipe.isGlutenFree && (
+                  <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                    Gluten Free
+                  </span>
+                )}
+                {recipe.isHealthy && (
+                  <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                    Healthy
+                  </span>
+                )}
+                {recipe.isCheap && (
+                  <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">
+                    Budget Friendly
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedRecipeId(recipe.id)
+                  setShowRecipe(true)
+                }} 
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
+              >
+                View Recipe Details
+              </button>
             </div>
-            <button 
-              onClick={() => navigate(`/recipe/${recipe.id}`)}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
-            >
-              View Recipe Details
-            </button>
           </div>
+        ))}
+      </div>
+
+      {/* Recipe dialog / modal window */}
+      <Dialog open={showRecipe} onClose={() => setShowRecipe(false)} className="relative z-100">
+        <div className="fixed inset-0 flex w-screen items-center justify-center py-8 bg-slate-500 bg-opacity-40">
+          <DialogPanel className="min-w-2xl max-h-[90vh] overflow-y-auto border rounded-lg shadow-lg bg-white px-16 py-12">
+            <RecipeDetails id={selectedRecipeId} setShowRecipe={setShowRecipe} />
+          </DialogPanel>
         </div>
-      ))}
-    </div>
+      </Dialog>
+    </>
   );
 };
 

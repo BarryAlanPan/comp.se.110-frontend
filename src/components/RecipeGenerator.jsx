@@ -23,10 +23,15 @@ const RecipeGenerator = () => {
 
     // Nutritional ranges state
     const [nutritionRanges, setNutritionRanges] = useState({
-        healthScore: [50, 100],
         calories: [200, 800],
         protein: [10, 50],
         carbs: [20, 100]
+    });
+
+    const [visibleRanges, setVisibleRanges] = useState({
+        calories: false,
+        protein: false,
+        carbs: false
     });
 
     const handleAddIncluded = () => {
@@ -210,59 +215,73 @@ const RecipeGenerator = () => {
                             </div>
                         </div>
                     </div>
-
                     <div className="space-y-6">
-                        {/* Nutritional Ranges */}
-                        <div className="bg-white rounded-lg p-6 shadow">
-                            <h2 className="text-lg font-medium mb-4">Nutritional Information</h2>
-                            <div className="space-y-6">
-                                {Object.entries(nutritionRanges).map(([key, values]) => (
-                                    <div key={key}>
-                                        <div className="flex justify-between mb-2">
-                                            <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                                            <span>{values[0]}-{values[1]}</span>
-                                        </div>
-                                        <Range
-                                            values={values}
-                                            step={1}
-                                            min={key === 'healthScore' ? 0 : 
-                                                key === 'calories' ? 0 : 
-                                                key === 'protein' ? 0 : 
-                                                0}
-                                            max={key === 'healthScore' ? 100 : 
-                                                key === 'calories' ? 1500 : 
-                                                key === 'protein' ? 100 : 
-                                                200}
-                                            onChange={(newValues) => setNutritionRanges(prev => ({
-                                                ...prev,
-                                                [key]: newValues
-                                            }))}
-                                            renderTrack={({ props, children }) => (
-                                                <div
-                                                    {...props}
-                                                    className="w-full h-3 bg-gray-200 rounded-full"
-                                                    style={{
-                                                        ...props.style
-                                                    }}
-                                                >
-                                                    {children}
-                                                </div>
-                                            )}
-                                            renderThumb={({ props }) => (
-                                                <div
-                                                    {...props}
-                                                    className="h-5 w-5 bg-gray-900 rounded-full focus:outline-none"
-                                                    style={{
-                                                        ...props.style
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+      {/* Nutritional Ranges */}
+      <div className="bg-white rounded-lg p-6 shadow">
+        <h2 className="text-lg font-medium mb-4">Nutritional Information</h2>
+        <div className="space-y-6">
+          {Object.entries(nutritionRanges).map(([key, values]) => (
+            <div key={key} className="flex items-center space-x-4">
+              <label className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={visibleRanges[key]}
+                  onChange={() => setVisibleRanges(prev => ({
+                    ...prev,
+                    [key]: !prev[key]
+                  }))}
+                  className="w-4 h-4"
+                />
+                <span className="text-gray-700 capitalize">
+                  {visibleRanges[key] ? 'on' : 'off'}
+                </span>
+              </label>
+              <div className="flex-grow">
+                <div className="flex justify-between mb-2">
+                  <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                  <span>{values[0]}-{values[1]}</span>
+                </div>
+                <Range
+                  values={values}
+                  step={1}
+                  min={key === 'calories' ? 0 : 
+                      key === 'protein' ? 0 : 
+                      0}
+                  max={key === 'calories' ? 1500 : 
+                      key === 'protein' ? 100 : 
+                      200}
+                  onChange={(newValues) => setNutritionRanges(prev => ({
+                    ...prev,
+                    [key]: newValues
+                  }))}
+                  renderTrack={({ props, children }) => (
+                    <div
+                      {...props}
+                      className="w-full h-3 bg-gray-200 rounded-full"
+                      style={{
+                        ...props.style
+                      }}
+                    >
+                      {children}
                     </div>
+                  )}
+                  renderThumb={({ props }) => (
+                    <div
+                      {...props}
+                      className="h-5 w-5 bg-gray-900 rounded-full focus:outline-none"
+                      style={{
+                        ...props.style
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+</div>
                 </div>
 
 
