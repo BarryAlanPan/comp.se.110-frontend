@@ -63,6 +63,18 @@ const RecipeGenerator = () => {
         }
     };
 
+    const handleGenerate = () => {
+        navigate('/search-results', {
+            state: {
+                includedIngredients,
+                excludedIngredients,
+                cuisine,
+                filters,
+                nutritionRanges
+            }
+        });
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 text-gray-500">
             <div className="container mx-auto px-4 py-6">
@@ -257,7 +269,10 @@ const RecipeGenerator = () => {
 
                 {/* Generate Button */}
                 <div className="fixed bottom-6 right-6">
-                    <button className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800">
+                    <button 
+                        onClick={handleGenerate}
+                        className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800"
+                    >
                         Generate
                     </button>
                 </div>
