@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { Dialog, DialogPanel } from '@headlessui/react';
 import RecipeDetails from './RecipeDetails';
 
 const RecipeList = ({ ingredients }) => {
   const [recipes, setRecipes] = useState([]);
   const [selectedRecipeId, setSelectedRecipeId] = useState(null);
   const [showRecipe, setShowRecipe] = useState(false);
+  const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -36,6 +37,40 @@ const RecipeList = ({ ingredients }) => {
 
     fetchRecipes();
   }, [ingredients]);
+
+  const addRecipeToFavorites = async (recipe) => {
+    const response = await axios.put(`http://localhost:8080/api/users/1`, {
+      ...user,
+      savedRecipes: [...user.savedRecipes, recipe],
+    });
+    await fetchUser();
+  }
+  
+  const removeRecipeFromFavorites = async (recipe) => {
+    const updatedFavorites = user.savedRecipes.filter(r => r.id !== recipe.id);
+    const response = await axios.put(`http://localhost:8080/api/users/1`, {
+      ...user,
+      savedRecipes: [...updatedFavorites],
+    });
+    await fetchUser();
+  }
+
+  const fetchUser = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/api/users/1`);
+      const { data } = response;
+      setUser(data);
+    } catch (err) {
+      console.error('Error fetching user details:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   if (loading) {
     return (
@@ -67,6 +102,7 @@ const RecipeList = ({ ingredients }) => {
       <div className="mt-6 grid grid-cols-3 gap-4">
         {recipes.map((recipe) => (
           <div key={recipe.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            {console.log(recipe)}
             <div className="p-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">{recipe.name}</h3>
               <div className="flex flex-wrap gap-2 mb-2">
@@ -91,6 +127,29 @@ const RecipeList = ({ ingredients }) => {
                   </span>
                 )}
               </div>
+
+              {user.savedRecipes.some(r => r.id === recipe.id) && (
+                <button
+                  onClick={() => {
+                    removeRecipeFromFavorites(recipe)
+                  }}
+                  className="mb-2 w-full bg-red-200 hover:bg-red-300 text-red-600 font-medium py-2 px-4 rounded"
+                >
+                  Remove from favorites
+                </button>
+              )}
+
+              {!user.savedRecipes.some(r => r.id === recipe.id) && (
+                <button
+                  onClick={() => {
+                    addRecipeToFavorites(recipe)
+                  }}
+                  className="mb-2 w-full bg-yellow-200 hover:bg-yellow-300 text-yellow-600 font-medium py-2 px-4 rounded"
+                >
+                  Add to favorites
+                </button>
+              )}
+
               <button
                 onClick={() => {
                   setSelectedRecipeId(recipe.id)
@@ -98,7 +157,7 @@ const RecipeList = ({ ingredients }) => {
                 }} 
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
               >
-                View Recipe Details
+                View recipe details
               </button>
             </div>
           </div>

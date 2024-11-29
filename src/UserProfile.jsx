@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
 import Header from './components/Header';
+import { Dialog, DialogPanel } from '@headlessui/react';
+import RecipeDetails from './components/RecipeDetails';
 
 const Profile = () => {
+
+  const [selectedRecipeId, setSelectedRecipeId] = useState(null);
+  const [showRecipe, setShowRecipe] = useState(false);
+
   const [loading, setLoading] = useState(true);
 
   const [name, setName] = useState('');
@@ -12,14 +18,7 @@ const Profile = () => {
   const [birthday, setBirthday] = useState('');
   const [allergies, setAllergies] = useState([]);
   const [newAllergy, setNewAllergy] = useState('');
-  const [savedRecipes, setSavedRecipes] = useState([
-    { name: 'Pasta Carbonara', image: '/api/placeholder/50/50' },
-    { name: 'Cucumber Salad', image: '/api/placeholder/50/50' },
-    { name: 'Chicken Salad', image: '/api/placeholder/50/50' },
-    { name: 'Grilled Vegetables', image: '/api/placeholder/50/50' },
-    { name: 'Salmon Dish', image: '/api/placeholder/50/50' },
-    { name: 'Noodle Soup', image: '/api/placeholder/50/50' },
-  ]);
+  const [savedRecipes, setSavedRecipes] = useState([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -34,6 +33,7 @@ const Profile = () => {
         setCuisine(data.favouriteCuisine);
         setAllergies(data.allergies);
         setBirthday(data.birthday);
+        setSavedRecipes(data.savedRecipes);
         
         console.log(response.data);
       } catch (err) {
@@ -53,9 +53,18 @@ const Profile = () => {
       favouriteCuisine: cuisine,
       allergies,
       birthday,
-      // savedRecipes,
+      savedRecipes: savedRecipes,
     });
+
+    console.log(response)
   };
+
+  useEffect(() => {
+    if (name === '' && diet === '' && cuisine === '' && birthday === '') {
+      return;
+    }
+    handleSubmit();
+  }, [name, diet, cuisine, allergies, birthday]);
 
   const handleAddAllergy = () => {
     if (newAllergy.trim() !== '') {
@@ -177,12 +186,19 @@ const Profile = () => {
             <h3 className="text-xl font-semibold mb-4">Saved recipes</h3>
             <div className="space-y-4">
               {savedRecipes.map((recipe, index) => (
-                <div key={index} className="flex items-center space-x-4 bg-gray-50 p-3 rounded-md">
-                  <img src={recipe.image} alt={recipe.name} className="w-12 h-12 rounded-md" />
+                <div
+                  key={index}
+                  onClick={() => {
+                    setSelectedRecipeId(recipe.id);
+                    setShowRecipe(true);
+                  }}
+                  className="flex items-center space-x-4 bg-gray-50 p-3 rounded-md cursor-pointer"
+                >
                   <span className="flex-grow">{recipe.name}</span>
                 </div>
               ))}
             </div>
+            {/* 
             <div className="mt-6">
               <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
               <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
@@ -195,8 +211,18 @@ const Profile = () => {
             <button className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
               Download selected recipes
             </button>
+            */}
           </div>
         </div>
+
+        {/* Recipe dialog / modal window */}
+        <Dialog open={showRecipe} onClose={() => setShowRecipe(false)} className="relative z-100">
+          <div className="fixed inset-0 flex w-screen items-center justify-center py-8 bg-slate-500 bg-opacity-40">
+            <DialogPanel className="min-w-2xl max-h-[90vh] overflow-y-auto border rounded-lg shadow-lg bg-white px-16 py-12">
+              <RecipeDetails id={selectedRecipeId} setShowRecipe={setShowRecipe} />
+            </DialogPanel>
+          </div>
+        </Dialog>
       </main>
     </div>
   );
